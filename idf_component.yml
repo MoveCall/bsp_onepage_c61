@@ -1,0 +1,15 @@
+version: "0.1.0"
+description: "OnePage e-paper reader — ESP32-C61 board support package (display / keys / SD / power / RTC / mic / wireless)"
+url: "https://github.com/MoveCall/bsp_onepage_c61"
+repository: "https://github.com/MoveCall/bsp_onepage_c61.git"
+license: "MIT"
+targets:
+  - "esp32c61"
+tags:
+  - "bsp"
+  - "esp32c61"
+  - "epd"
+  - "ssd1677"
+  - "display"
+dependencies:
+  espressif/button: "^4.2.0"
