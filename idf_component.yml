@@ -1,4 +1,4 @@
-version: "0.1.2"
+version: "0.1.3"
 description: "OnePage e-paper reader — ESP32-C61 board support package (display / keys / SD / power / RTC / mic / wireless)"
 url: "https://github.com/MoveCall/bsp_onepage_c61"
 repository: "https://github.com/MoveCall/bsp_onepage_c61.git"
@@ -13,4 +13,4 @@ tags:
   - "display"
 dependencies:
   espressif/button: "^4.2.0"
-  MoveCall/moui: "^0.1.3"
+  MoveCall/moui: "^0.1.5"

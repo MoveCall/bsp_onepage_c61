@@ -48,6 +48,10 @@ static const char *TAG = "board_c61";
 #define EPD_H 480                 // gate (<=680)
 #define EPD_BUF_SIZE (EPD_W * EPD_H / 8)
 
+#ifndef EPD_PARTIAL_ANTI_GHOSTING
+#define EPD_PARTIAL_ANTI_GHOSTING 0
+#endif
+
 #define PIN_SD_CS    GPIO_NUM_26
 #define PIN_SD_CD    GPIO_NUM_28   // card-detect
 #define PIN_CHG_EN   GPIO_NUM_10   // charge control; pull low to read true battery V
@@ -199,7 +203,7 @@ moui_backend_t *board_display_init(void)
         .gate_scan_dir    = 0x02,   // SM interlaced scan (GxEPD2-compatible)
         .use_internal_lut = true,   // OTP waveform
         .use_otp_voltages = true,   // skip 3.7" voltage regs
-        .anti_ghosting    = true,   // partial: invert-restore the dirty rect so a moving cursor leaves no ghost (localized flash, no full-screen blink)
+        .anti_ghosting    = EPD_PARTIAL_ANTI_GHOSTING,
         .fast_temp        = 0x5A,   // fixed high temp -> fast full-refresh waveform
         .mirror_y         = true,   // panel gates reversed: reverse Y data
     };
