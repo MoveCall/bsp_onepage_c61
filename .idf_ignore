@@ -3,5 +3,6 @@
 .gitignore
 .github/
 build/
+dist/
 sdkconfig*
 managed_components/

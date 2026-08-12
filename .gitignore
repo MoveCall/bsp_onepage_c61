@@ -5,6 +5,7 @@
 
 # ESP-IDF / Build artifacts
 build/
+dist/
 sdkconfig
 sdkconfig.old
 managed_components/
