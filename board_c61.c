@@ -231,6 +231,11 @@ void board_display_set_partial(bool force_partial)
     moui_drv_ssd1677_set_partial(&s_epd, force_partial);
 }
 
+void board_display_force_full_partial_once(void)
+{
+    moui_drv_ssd1677_force_full_partial_once(&s_epd);
+}
+
 /* ── Keys — implemented in board_keys.c ────────────────────────────────── */
 
 /* ── Power (battery ADC / USB detect / charge control) ─────────────────── */

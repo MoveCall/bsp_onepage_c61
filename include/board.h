@@ -66,6 +66,7 @@ const moui_hal_t *board_hal(void);     // moui timing/log HAL
 moui_backend_t *board_display_init(void);   // init panel, return moui backend
 void            board_display_force_full(void);  // next flush = full refresh (clear ghosting)
 void            board_display_set_partial(bool force_partial);  // partial-refresh mode (fast key nav)
+void            board_display_force_full_partial_once(void);    // next partial flush = one clean full refresh
 void            board_display_sleep(void);
 
 /* ── Keys ──────────────────────────────────────────────────────────────── */
