@@ -22,10 +22,13 @@
 #include "esp_wifi.h"
 #include "esp_netif.h"
 #include "esp_event.h"
+#if CONFIG_BT_ENABLED
 #include "esp_bt.h"
+#endif
 #include "soc/rtc.h"
 #include "esp_private/esp_clk.h"
 #include "esp_sleep.h"
+#include "esp_idf_version.h"
 
 static const char *TAG = "board_c61";
 
@@ -350,12 +353,20 @@ void board_sleep_enter(uint32_t wake_flags, uint32_t timer_ms)
 
 board_wake_cause_t board_wake_cause(void)
 {
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
+    uint32_t causes = esp_sleep_get_wakeup_causes();
+    if (causes & (1ULL << ESP_SLEEP_WAKEUP_GPIO))  return BOARD_WAKE_BY_KEY;
+    if (causes & (1ULL << ESP_SLEEP_WAKEUP_TIMER)) return BOARD_WAKE_BY_TIMER;
+    if (causes == 0)                               return BOARD_WAKE_POWERON;
+    return BOARD_WAKE_OTHER;
+#else
     switch (esp_sleep_get_wakeup_cause()) {
     case ESP_SLEEP_WAKEUP_GPIO:      return BOARD_WAKE_BY_KEY;
     case ESP_SLEEP_WAKEUP_TIMER:     return BOARD_WAKE_BY_TIMER;
     case ESP_SLEEP_WAKEUP_UNDEFINED: return BOARD_WAKE_POWERON;
     default:                         return BOARD_WAKE_OTHER;
     }
+#endif
 }
 
 /* ── Storage (microSD over shared SPI) ─────────────────────────────────── */
@@ -466,10 +477,14 @@ int board_wifi_scan(board_ap_t *out, int max)
 
 esp_err_t board_ble_init(void)
 {
+#if CONFIG_BT_ENABLED
     esp_bt_controller_config_t cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     esp_err_t e = esp_bt_controller_init(&cfg);
     if (e != ESP_OK) return e;
     return esp_bt_controller_enable(ESP_BT_MODE_BLE);
+#else
+    return ESP_ERR_NOT_SUPPORTED;
+#endif
 }
 
 /* ── Init / capabilities / HAL ─────────────────────────────────────────── */
