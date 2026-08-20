@@ -79,7 +79,12 @@ static esp_err_t spi_bus_setup(void)
 
     // Power the peripheral rail on (RST/PWR_EN high) and let it settle.
     gpio_set_level(PIN_RST, 1);
-    vTaskDelay(pdMS_TO_TICKS(10));
+    vTaskDelay(pdMS_TO_TICKS(20));
+
+    // Configure pull-ups for SPI lines to prevent bus floating
+    gpio_set_pull_mode(PIN_SD_CS, GPIO_PULLUP_ONLY);
+    gpio_set_pull_mode(PIN_CS, GPIO_PULLUP_ONLY);
+    gpio_set_pull_mode(GPIO_NUM_24, GPIO_PULLUP_ONLY); // MISO
 
     gpio_config_t in_cfg = { .pin_bit_mask = (1ULL << PIN_BUSY), .mode = GPIO_MODE_INPUT };
     gpio_config(&in_cfg);
@@ -148,11 +153,10 @@ static void bridge_wait_busy(void *user)
 
 static void bridge_hw_reset(void *user)
 {
+    // Note: GPIO27 is the shared peripheral power rail (EPD + SD + MIC).
+    // It is held HIGH continuously during active runtime and pulled LOW only in deep sleep.
+    // EPD reset is performed via SSD1677 SW_RESET (0x12) in moui driver.
     (void)user;
-    gpio_set_level(PIN_RST, 0);
-    vTaskDelay(pdMS_TO_TICKS(20));
-    gpio_set_level(PIN_RST, 1);
-    vTaskDelay(pdMS_TO_TICKS(20));
 }
 
 /* ── moui HAL (timing / log) ───────────────────────────────────────────── */
@@ -383,6 +387,7 @@ esp_err_t board_sd_mount(const char *mount_point)
 
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
     host.slot = SPI_HOST_ID;                 // reuse the already-initialized SPI2
+    host.max_freq_khz = 10000;               // 10MHz stable clock for shared SPI bus
     sdspi_device_config_t slot = SDSPI_DEVICE_CONFIG_DEFAULT();
     slot.gpio_cs = PIN_SD_CS;
     slot.host_id = SPI_HOST_ID;

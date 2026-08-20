@@ -1,4 +1,4 @@
-version: "0.1.6"
+version: "0.1.7"
 description: "OnePage e-paper reader — ESP32-C61 board support package (display / keys / SD / power / RTC / mic / wireless)"
 url: "https://github.com/MoveCall/bsp_onepage_c61"
 repository: "https://github.com/MoveCall/bsp_onepage_c61.git"
