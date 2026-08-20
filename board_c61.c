@@ -77,7 +77,9 @@ static esp_err_t spi_bus_setup(void)
     };
     gpio_config(&out_cfg);
 
-    // Power the peripheral rail on (RST/PWR_EN high) and let it settle.
+    // Power-on hardware reset pulse on boot: low 20ms -> high 20ms
+    gpio_set_level(PIN_RST, 0);
+    vTaskDelay(pdMS_TO_TICKS(20));
     gpio_set_level(PIN_RST, 1);
     vTaskDelay(pdMS_TO_TICKS(20));
 
@@ -153,10 +155,9 @@ static void bridge_wait_busy(void *user)
 
 static void bridge_hw_reset(void *user)
 {
-    // Note: GPIO27 is the shared peripheral power rail (EPD + SD + MIC).
-    // It is held HIGH continuously during active runtime and pulled LOW only in deep sleep.
-    // EPD reset is performed via SSD1677 SW_RESET (0x12) in moui driver.
     (void)user;
+    // Note: Initial hardware power-cycle was already completed in board_init().
+    // Runtime EPD reset uses SSD1677 SW_RESET (0x12) so SD power is never cut.
 }
 
 /* ── moui HAL (timing / log) ───────────────────────────────────────────── */
