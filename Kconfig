@@ -1,0 +1,7 @@
+# bsp_onepage_c61 requires the moui SSD1677 E-Paper driver (board_c61.c calls
+# moui_drv_ssd1677_* directly). Force it on so the BSP stays a drop-in
+# component even when the app does not set CONFIG_MOUI_USE_DRV_SSD1677.
+config BSP_ONEPAGE_C61
+    bool
+    default y
+    select MOUI_USE_DRV_SSD1677
